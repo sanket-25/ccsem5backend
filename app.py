@@ -1,17 +1,28 @@
 from flask import Flask, request, jsonify
 import pyodbc
-from flask-cors import CORS
+from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+
+# CORS configuration
+cors = CORS(app, resources={
+    r"/add_user": {
+        "origins": ["https://ccsem5app-eeahfff0bwg3a2ez.scm.westindia-01.azurewebsites.net"],
+        "methods": ["POST"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    },
+    r"/users": {
+        "origins": ["*"],  # Allow all origins for this endpoint
+        "methods": ["GET"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Database connection string (replace with your Azure SQL Database connection info)
 driver = '{ODBC Driver 18 for SQL Server}'
 server = 'tcp:ccsem5server.database.windows.net,1433'
 database = 'ccsem5db'
 username = 'CloudSAc995b7fa'
-# Password would be replaced with a secure method such as Azure Key Vault in a real-world scenario.
-# For this example, we omit the password because you are using ActiveDirectoryIntegrated.
 authentication = 'ActiveDirectoryIntegrated'
 encrypt = 'yes'
 trust_certificate = 'no'
